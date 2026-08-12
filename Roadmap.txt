@@ -1,0 +1,277 @@
+Product Name: GoldPulse AI
+
+Tagline: Know what moved Gold before you trade.
+
+🎯 MVP Goal
+
+Build a simple website where a gold trader opens one page every morning and gets:
+
+“Everything important that happened overnight and could affect Gold today — summarized in 3–5 minutes.”
+
+🚀 7-Day GoldPulse AI MVP Plan
+Day 1 — Define the product
+
+Build only these sections:
+
+Today's Gold Summary
+Top 5 Gold News
+Why It Matters
+Gold Drivers
+USD
+Fed
+US yields
+Inflation
+Geopolitics
+Central banks
+Oil
+Economic Events Today
+Bullish / Bearish Factors
+AI Market Brief
+Previous Day vs Today
+
+Don't build accounts, payments, mobile apps, alerts, etc. yet.
+
+Day 2 — Build the AI pipeline
+
+Use:
+
+News Sources → Backend → Claude API → Database → Website
+
+Claude should process each article and return structured information:
+
+Title
+Source
+Published time
+Summary
+Gold relevance: 0–100
+Impact: Bullish / Bearish / Neutral
+Importance: High / Medium / Low
+Affected factors
+Why it matters
+
+Then Claude generates the final:
+
+Gold Daily Briefing
+
+Day 3 — Build the backend
+
+Recommended stack:
+
+Next.js
+TypeScript
+Tailwind CSS
+Supabase
+Claude API
+Vercel
+
+Keep the architecture extremely simple.
+
+GoldPulse
+│
+├── News Collector
+│
+├── AI Analyzer
+│
+├── Supabase Database
+│
+└── Next.js Dashboard
+Day 4 — Build the dashboard
+
+The homepage should look something like:
+
+GOLDPULSE AI
+Wednesday, August 12
+
+🥇 GOLD DAILY BRIEF
+
+Market Sentiment
+🟢 Moderately Bullish
+
+Score
+7.2 / 10
+
+━━━━━━━━━━━━━━━━━━━━
+
+🔥 TOP DEVELOPMENTS
+
+1. US Dollar weakened overnight
+2. Treasury yields declined
+3. Fed comments...
+4. Geopolitical tensions...
+5. Central bank buying...
+
+━━━━━━━━━━━━━━━━━━━━
+
+WHY IT MATTERS
+
+[AI explanation]
+
+━━━━━━━━━━━━━━━━━━━━
+
+GOLD DRIVERS
+
+USD             🟢 Bullish
+Fed             🟢 Bullish
+US Yields       🟢 Bullish
+Inflation       🟡 Neutral
+Geopolitics     🟢 Bullish
+
+━━━━━━━━━━━━━━━━━━━━
+
+📅 TODAY'S EVENTS
+
+08:30 — US Economic Data
+14:00 — Fed Speech
+...
+
+━━━━━━━━━━━━━━━━━━━━
+
+🤖 AI DAILY TAKE
+
+[Short 150–250 word briefing]
+Day 5 — Test with real traders
+
+Give it to 5–10 people who actually trade Gold.
+
+Don't ask:
+
+"Do you like my website?"
+
+Ask:
+
+Every morning:
+
+"Did this save you time?"
+
+"What information was missing?"
+
+"Which section did you actually read?"
+
+"Would you check this before trading?"
+
+"Would you pay AED 30/month for this?"
+
+These answers are more important than your own assumptions.
+
+Day 6 — Improve the AI
+
+This is where Claude Pro becomes extremely useful.
+
+Create prompts for:
+
+Prompt 1
+
+Gold News Analyst
+
+Determine whether an article actually matters to Gold.
+
+Prompt 2
+
+Gold Impact Analyst
+
+Determine:
+
+Bullish / Bearish / Neutral
+
+and explain why.
+
+Prompt 3
+
+Gold Morning Analyst
+
+Combine all important overnight information.
+
+Prompt 4
+
+Gold Risk Analyst
+
+Identify events that could cause volatility today.
+
+Prompt 5
+
+Gold Brief Generator
+
+Turn everything into a 3–5 minute briefing.
+
+Day 7 — Launch MVP
+
+Deploy on:
+
+goldpulse.ai
+
+or another available domain.
+
+Initially:
+
+FREE
+
+Gold Daily Brief
+
+One briefing every morning.
+
+Then add:
+
+PRO — AED 29/month
+Morning briefing
+More detailed analysis
+Intraday updates
+Historical briefings
+Personalized gold watchlist
+Alerts
+🔥 Most Important MVP Feature
+
+Don't make the website:
+
+"AI summarizes Gold news."
+
+Make it:
+
+"AI tells me what actually matters for Gold today."
+
+That's the differentiation.
+
+For every news item:
+
+What happened?
+Why does it matter to Gold?
+What Gold driver does it affect?
+How important is it?
+What should I watch next?
+
+That is what traders are actually paying for.
+
+Claude Pro Development Strategy
+
+Since you want to move ASAP, don't ask Claude to build the entire application in one prompt.
+
+Use Claude as your AI developer and build incrementally:
+
+Prompt 1: Architecture
+↓
+Prompt 2: Database
+↓
+Prompt 3: News ingestion
+↓
+Prompt 4: Claude analysis API
+↓
+Prompt 5: Daily briefing engine
+↓
+Prompt 6: Dashboard
+↓
+Prompt 7: Authentication
+↓
+Prompt 8: Deployment
+↓
+Prompt 9: Testing
+↓
+Prompt 10: Security
+
+The goal should be:
+
+First usable Gold briefing within 2–3 days.
+
+Don't wait until the whole SaaS is perfect.
+
+Build → give to traders → observe → improve → charge.
+
+If 10 Gold traders start opening GoldPulse every morning without you reminding them, then you have something worth turning into a serious SaaS.
