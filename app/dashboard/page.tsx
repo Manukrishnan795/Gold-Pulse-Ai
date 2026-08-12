@@ -4,9 +4,13 @@ import { getUpcomingEvents } from "@/lib/events";
 import { Header } from "@/components/layout/Header";
 import { GoldHeader } from "@/components/dashboard/GoldHeader";
 import { MarketSentiment } from "@/components/dashboard/MarketSentiment";
+import { SixtySecondBrief } from "@/components/dashboard/SixtySecondBrief";
 import { MarketPulse } from "@/components/dashboard/MarketPulse";
+import { DriverMap } from "@/components/dashboard/DriverMap";
+import { OvernightSummary } from "@/components/dashboard/OvernightSummary";
 import { TopDevelopments } from "@/components/dashboard/TopDevelopments";
 import { WhyItMatters } from "@/components/dashboard/WhyItMatters";
+import { WatchList } from "@/components/dashboard/WatchList";
 import { GoldDrivers } from "@/components/dashboard/GoldDrivers";
 import { BullishBearish } from "@/components/dashboard/BullishBearish";
 import { EconomicEvents } from "@/components/dashboard/EconomicEvents";
@@ -37,11 +41,19 @@ export default async function HomePage() {
           marketScore={brief?.market_score ?? null}
         />
 
+        <SixtySecondBrief text={brief?.sixty_second_brief ?? null} />
+
         <MarketPulse snapshots={driverSnapshots} />
+
+        <DriverMap primary={brief?.primary_driver ?? null} secondary={brief?.secondary_driver ?? null} />
+
+        <OvernightSummary items={brief?.overnight_summary ?? []} />
 
         <TopDevelopments stories={brief?.stories ?? []} />
 
-        <WhyItMatters topStory={brief?.stories?.[0] ?? null} />
+        <WhyItMatters topStory={brief?.stories?.[0] ?? null} invalidationNote={brief?.invalidation_note} />
+
+        <WatchList items={brief?.watch_list ?? []} />
 
         <GoldDrivers snapshots={driverSnapshots} />
 

@@ -76,16 +76,37 @@ export interface StoryView {
   sources: StorySourceView[];
 }
 
+export interface DriverCallout {
+  driver: string;
+  impact: "bullish" | "bearish" | "neutral";
+  note: string;
+}
+
+export interface WatchItem {
+  label: string;
+  reason: string;
+}
+
+export interface OvernightItem {
+  headline: string;
+  driver: string;
+}
+
 export interface BriefView {
   brief_date: string;
   created_at: string;
   sentiment: string;
   confidence: number;
   market_score: number;
+  sixty_second_brief: string;
   ai_summary: string;
   bullish_factors: string[];
   bearish_factors: string[];
-  what_changed: string | null;
+  primary_driver: DriverCallout | null;
+  secondary_driver: DriverCallout | null;
+  watch_list: WatchItem[];
+  invalidation_note: string | null;
+  overnight_summary: OvernightItem[];
   stories: StoryView[];
 }
 
@@ -137,10 +158,15 @@ export async function getLatestBrief(): Promise<BriefView | null> {
     sentiment: brief.sentiment,
     confidence: brief.confidence,
     market_score: Number(brief.market_score),
+    sixty_second_brief: brief.sixty_second_brief,
     ai_summary: brief.ai_summary,
     bullish_factors: brief.bullish_factors ?? [],
     bearish_factors: brief.bearish_factors ?? [],
-    what_changed: brief.what_changed,
+    primary_driver: brief.primary_driver,
+    secondary_driver: brief.secondary_driver,
+    watch_list: brief.watch_list ?? [],
+    invalidation_note: brief.invalidation_note,
+    overnight_summary: brief.overnight_summary ?? [],
     stories,
   };
 }

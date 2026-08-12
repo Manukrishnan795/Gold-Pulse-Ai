@@ -24,15 +24,36 @@ interface MarketStoryToolInput {
   why_it_matters: string;
 }
 
+interface DriverCallout {
+  driver: string;
+  impact: "bullish" | "bearish" | "neutral";
+  note: string;
+}
+
+interface WatchItem {
+  label: string;
+  reason: string;
+}
+
+interface OvernightItem {
+  headline: string;
+  driver: string;
+}
+
 interface DailyBriefToolInput {
   sentiment: string;
   confidence: number;
   market_score: number;
+  sixty_second_brief: string;
   ai_summary: string;
   bullish_factors: string[];
   bearish_factors: string[];
-  what_changed: string | null;
   market_stories: MarketStoryToolInput[];
+  primary_driver: DriverCallout;
+  secondary_driver: DriverCallout;
+  watch_list: WatchItem[];
+  invalidation_note: string;
+  overnight_summary: OvernightItem[];
 }
 
 function todayDateString(): string {
@@ -104,8 +125,19 @@ export async function runAggregation(): Promise<{ brief_id: string; brief_date: 
     }
 
     const candidate = toolUse.input as DailyBriefToolInput;
-    if (!Array.isArray(candidate.market_stories) || candidate.market_stories.length === 0) {
-      lastError = `attempt ${attempt}: missing/empty market_stories (stop_reason: ${message.stop_reason})`;
+    const isValid =
+      Array.isArray(candidate.market_stories) &&
+      candidate.market_stories.length > 0 &&
+      candidate.primary_driver &&
+      candidate.secondary_driver &&
+      Array.isArray(candidate.watch_list) &&
+      candidate.watch_list.length > 0 &&
+      typeof candidate.sixty_second_brief === "string" &&
+      candidate.sixty_second_brief.length > 0 &&
+      Array.isArray(candidate.overnight_summary);
+
+    if (!isValid) {
+      lastError = `attempt ${attempt}: missing required field(s) (stop_reason: ${message.stop_reason})`;
       continue;
     }
 
@@ -124,10 +156,15 @@ export async function runAggregation(): Promise<{ brief_id: string; brief_date: 
         sentiment: brief.sentiment,
         confidence: brief.confidence,
         market_score: brief.market_score,
+        sixty_second_brief: brief.sixty_second_brief,
         ai_summary: brief.ai_summary,
         bullish_factors: brief.bullish_factors,
         bearish_factors: brief.bearish_factors,
-        what_changed: brief.what_changed,
+        primary_driver: brief.primary_driver,
+        secondary_driver: brief.secondary_driver,
+        watch_list: brief.watch_list,
+        invalidation_note: brief.invalidation_note,
+        overnight_summary: brief.overnight_summary,
       },
       { onConflict: "brief_date" }
     )
