@@ -15,7 +15,7 @@ export function Header({ lastUpdated }: { lastUpdated: string | null }) {
     <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
       <div className="relative mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <div className="flex items-center gap-8">
-          <a href="#top" aria-label="GoldPulse AI home">
+          <a href="/" aria-label="GoldPulse AI home">
             <Logo size="md" />
           </a>
           <nav className="hidden sm:block">

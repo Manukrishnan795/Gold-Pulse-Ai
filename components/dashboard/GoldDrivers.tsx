@@ -11,33 +11,32 @@ export function GoldDrivers({ snapshots }: { snapshots: Map<GoldDriver, DriverSn
         Today&apos;s state of the macro factors that move Gold.
       </p>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Card className="mt-4 divide-y divide-border p-0">
         {ALL_DRIVERS.map((driver) => {
           const snapshot = snapshots.get(driver);
           return (
-            <Card key={driver} hover className="p-4">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-medium text-text-primary">
-                  {snapshot?.label ?? driver}
-                </p>
-                {snapshot && <ImpactBadge impact={snapshot.impact} />}
-              </div>
+            <div
+              key={driver}
+              className="grid grid-cols-[minmax(96px,auto)_auto_1fr_auto] items-center gap-3 px-4 py-3 sm:gap-4"
+            >
+              <p className="truncate text-sm font-medium text-text-primary">
+                {snapshot?.label ?? driver}
+              </p>
               {snapshot ? (
-                <>
-                  <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-                    {snapshot.explanation}
-                  </p>
-                  <p className="mt-2 font-mono text-[11px] text-text-secondary">
-                    {snapshot.articleCount} development{snapshot.articleCount === 1 ? "" : "s"} today
-                  </p>
-                </>
+                <ImpactBadge impact={snapshot.impact} />
               ) : (
-                <p className="mt-2 text-xs text-text-secondary">No developments flagged today.</p>
+                <span className="text-xs text-text-secondary">—</span>
               )}
-            </Card>
+              <p className="hidden truncate text-xs text-text-secondary sm:block">
+                {snapshot?.explanation ?? "No developments flagged today."}
+              </p>
+              <span className="font-mono text-[11px] text-text-secondary">
+                {snapshot ? snapshot.articleCount : 0}
+              </span>
+            </div>
           );
         })}
-      </div>
+      </Card>
     </section>
   );
 }

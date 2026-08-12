@@ -4,9 +4,19 @@ import { ImpactBadge, ImportanceBadge } from "@/components/common/Badge";
 import { formatRelativeTime } from "@/lib/time";
 import type { NewsArticleView } from "@/lib/brief";
 
+const ACCENT_COLOR = {
+  bullish: "var(--bullish)",
+  bearish: "var(--bearish)",
+  neutral: "var(--neutral)",
+} as const;
+
 export function NewsCard({ article }: { article: NewsArticleView }) {
   return (
-    <Card hover className="p-4">
+    <Card
+      hover
+      className="border-l-2 p-3.5 sm:p-4"
+      style={{ borderLeftColor: ACCENT_COLOR[article.impact] }}
+    >
       <div className="flex flex-wrap items-start justify-between gap-2">
         <a
           href={article.source_url}

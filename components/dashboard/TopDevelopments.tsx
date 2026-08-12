@@ -5,6 +5,12 @@ import { ImpactBadge } from "@/components/common/Badge";
 import { formatRelativeTime } from "@/lib/time";
 import type { DevelopmentView } from "@/lib/brief";
 
+const ACCENT_COLOR = {
+  bullish: "var(--bullish)",
+  bearish: "var(--bearish)",
+  neutral: "var(--neutral)",
+} as const;
+
 export function TopDevelopments({ developments }: { developments: DevelopmentView[] }) {
   const top = developments.slice(0, 5);
 
@@ -24,7 +30,12 @@ export function TopDevelopments({ developments }: { developments: DevelopmentVie
       ) : (
         <div className="mt-4 space-y-2">
           {top.map((dev) => (
-            <Card key={dev.rank} hover className="p-4 sm:p-5">
+            <Card
+              key={dev.rank}
+              hover
+              className="border-l-2 p-4 sm:p-5"
+              style={{ borderLeftColor: ACCENT_COLOR[dev.impact] }}
+            >
               <div className="flex gap-4">
                 <span className="font-mono text-xl font-semibold text-border sm:text-2xl">
                   {String(dev.rank).padStart(2, "0")}
