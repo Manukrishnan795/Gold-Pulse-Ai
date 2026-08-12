@@ -13,6 +13,17 @@ interface AnalyzedRow {
   articles: { title: string; source: string; source_url: string; published_at: string } | null;
 }
 
+interface MarketStoryToolInput {
+  rank: number;
+  headline: string;
+  member_article_indices: number[];
+  gold_driver: string;
+  impact: "bullish" | "bearish" | "neutral";
+  importance: "high" | "medium" | "low";
+  summary: string;
+  why_it_matters: string;
+}
+
 interface DailyBriefToolInput {
   sentiment: string;
   confidence: number;
@@ -21,7 +32,7 @@ interface DailyBriefToolInput {
   bullish_factors: string[];
   bearish_factors: string[];
   what_changed: string | null;
-  top_developments: { article_index: number; rank: number }[];
+  market_stories: MarketStoryToolInput[];
 }
 
 function todayDateString(): string {
@@ -67,25 +78,43 @@ export async function runAggregation(): Promise<{ brief_id: string; brief_date: 
     : "No prior brief available (first day).";
 
   const claude = getClaudeClient();
-  const message = await claude.messages.create({
-    model: AGGREGATION_MODEL,
-    max_tokens: 2000,
-    system: DAILY_BRIEF_SYSTEM_PROMPT,
-    tools: [DAILY_BRIEF_TOOL],
-    tool_choice: { type: "tool", name: "submit_daily_brief" },
-    messages: [
-      {
-        role: "user",
-        content: `${yesterdayContext}\n\nToday's Gold-relevant developments:\n\n${inputList}`,
-      },
-    ],
-  });
+  const userMessage = `${yesterdayContext}\n\nToday's Gold-relevant developments:\n\n${inputList}`;
 
-  const toolUse = message.content.find((block) => block.type === "tool_use");
-  if (!toolUse || toolUse.type !== "tool_use") {
-    throw new Error("Claude did not return a tool_use block");
+  // Forced tool_choice occasionally omits a required field on a complex schema
+  // like this one (empirically observed, not consistently reproducible) — retry
+  // a few times rather than letting one bad generation fail the whole cron run.
+  const MAX_ATTEMPTS = 3;
+  let brief: DailyBriefToolInput | null = null;
+  let lastError = "";
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS && !brief; attempt++) {
+    const message = await claude.messages.create({
+      model: AGGREGATION_MODEL,
+      max_tokens: 4096,
+      system: DAILY_BRIEF_SYSTEM_PROMPT,
+      tools: [DAILY_BRIEF_TOOL],
+      tool_choice: { type: "tool", name: "submit_daily_brief" },
+      messages: [{ role: "user", content: userMessage }],
+    });
+
+    const toolUse = message.content.find((block) => block.type === "tool_use");
+    if (!toolUse || toolUse.type !== "tool_use") {
+      lastError = `attempt ${attempt}: no tool_use block (stop_reason: ${message.stop_reason})`;
+      continue;
+    }
+
+    const candidate = toolUse.input as DailyBriefToolInput;
+    if (!Array.isArray(candidate.market_stories) || candidate.market_stories.length === 0) {
+      lastError = `attempt ${attempt}: missing/empty market_stories (stop_reason: ${message.stop_reason})`;
+      continue;
+    }
+
+    brief = candidate;
   }
-  const brief = toolUse.input as DailyBriefToolInput;
+
+  if (!brief) {
+    throw new Error(`Daily brief generation failed after ${MAX_ATTEMPTS} attempts: ${lastError}`);
+  }
 
   const { data: briefRow, error: upsertError } = await supabase
     .from("daily_briefs")
@@ -107,20 +136,39 @@ export async function runAggregation(): Promise<{ brief_id: string; brief_date: 
 
   if (upsertError) throw upsertError;
 
-  // Clear any previous development links for this brief (safe to re-run)
-  await supabase.from("brief_developments").delete().eq("brief_id", briefRow.id);
+  // Clear any previous stories for this brief (safe to re-run — cascades to story_articles)
+  await supabase.from("market_stories").delete().eq("brief_id", briefRow.id);
 
-  const developmentRows = brief.top_developments
-    .filter((d) => analyzed[d.article_index])
-    .map((d) => ({
-      brief_id: briefRow.id,
-      article_id: analyzed[d.article_index].article_id,
-      rank: d.rank,
-    }));
+  for (const story of brief.market_stories) {
+    const memberArticleIds = story.member_article_indices
+      .filter((i) => analyzed[i])
+      .map((i) => analyzed[i].article_id);
 
-  if (developmentRows.length > 0) {
-    const { error: devError } = await supabase.from("brief_developments").insert(developmentRows);
-    if (devError) throw devError;
+    if (memberArticleIds.length === 0) continue;
+
+    const { data: storyRow, error: storyError } = await supabase
+      .from("market_stories")
+      .insert({
+        brief_id: briefRow.id,
+        rank: story.rank,
+        headline: story.headline,
+        gold_driver: story.gold_driver,
+        impact: story.impact,
+        importance: story.importance,
+        summary: story.summary,
+        why_it_matters: story.why_it_matters,
+        source_count: memberArticleIds.length,
+      })
+      .select()
+      .single();
+
+    if (storyError) throw storyError;
+
+    const { error: linkError } = await supabase
+      .from("story_articles")
+      .insert(memberArticleIds.map((article_id) => ({ story_id: storyRow.id, article_id })));
+
+    if (linkError) throw linkError;
   }
 
   return { brief_id: briefRow.id, brief_date: briefRow.brief_date };

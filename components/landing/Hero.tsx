@@ -57,10 +57,8 @@ function LivePreviewCard({ brief }: { brief: BriefView | null }) {
           <p className="font-mono text-lg font-semibold text-text-primary">{brief.confidence}%</p>
         </div>
         <div>
-          <p className="text-[11px] text-text-secondary">Top Developments</p>
-          <p className="font-mono text-lg font-semibold text-text-primary">
-            {brief.developments.length}
-          </p>
+          <p className="text-[11px] text-text-secondary">Market Stories</p>
+          <p className="font-mono text-lg font-semibold text-text-primary">{brief.stories.length}</p>
         </div>
       </div>
     </div>

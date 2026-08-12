@@ -39,9 +39,9 @@ export default async function HomePage() {
 
         <MarketPulse snapshots={driverSnapshots} />
 
-        <TopDevelopments developments={brief?.developments ?? []} />
+        <TopDevelopments stories={brief?.stories ?? []} />
 
-        <WhyItMatters topDevelopment={brief?.developments?.[0] ?? null} />
+        <WhyItMatters topStory={brief?.stories?.[0] ?? null} />
 
         <GoldDrivers snapshots={driverSnapshots} />
 
