@@ -1,6 +1,28 @@
 @import "tailwindcss";
 
+/* Light theme (default token set). Warm cream base, deepened status
+   colors for legible text-on-white contrast. */
 :root {
+  --background: #faf7f0;
+  --surface: #f3efe4;
+  --card: #ffffff;
+  --card-hover: #f6f2e9;
+  --border: #e5e0d3;
+  --text-primary: #1b1d22;
+  --text-secondary: #6b6e76;
+  --gold: #b8860b;
+  --gold-highlight: #96700a;
+  --bullish: #15803d;
+  --bullish-bg: rgba(21, 128, 61, 0.1);
+  --bearish: #dc2626;
+  --bearish-bg: rgba(220, 38, 38, 0.1);
+  --neutral: #57606a;
+  --neutral-bg: rgba(87, 96, 106, 0.1);
+}
+
+/* Dark theme overrides (applied via the "dark" class next-themes toggles
+   on <html>; this is the product's default look). */
+.dark {
   --background: #0b0f14;
   --surface: #0f141b;
   --card: #151b23;
@@ -43,6 +65,7 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 * {
@@ -51,7 +74,7 @@ body {
 
 ::selection {
   background: var(--gold);
-  color: #0b0f14;
+  color: var(--background);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,8 +26,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-text-primary">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-text-primary">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

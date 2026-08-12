@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const LINKS = [
   { href: "#how-it-works", label: "How It Works" },
@@ -28,12 +29,15 @@ export function LandingNav() {
           </ul>
         </nav>
 
-        <Link
-          href="/dashboard"
-          className="rounded-md bg-gold px-4 py-2 text-sm font-semibold text-background transition-colors duration-150 hover:bg-gold-highlight"
-        >
-          Open Dashboard
-        </Link>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Link
+            href="/dashboard"
+            className="rounded-md bg-gold px-4 py-2 text-sm font-semibold text-background transition-colors duration-150 hover:bg-gold-highlight"
+          >
+            Open Dashboard
+          </Link>
+        </div>
       </div>
     </header>
   );

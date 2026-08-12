@@ -1,5 +1,6 @@
 import { Logo } from "@/components/common/Logo";
 import { RefreshButton } from "./RefreshButton";
+import { ThemeToggle } from "./ThemeToggle";
 import { MobileNav } from "./MobileNav";
 import { formatRelativeTime } from "@/lib/time";
 
@@ -41,6 +42,7 @@ export function Header({ lastUpdated }: { lastUpdated: string | null }) {
             </span>
           )}
           <RefreshButton />
+          <ThemeToggle />
           <MobileNav />
         </div>
       </div>
